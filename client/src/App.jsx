@@ -1,29 +1,24 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import axios from "axios";
+import React from "react";
+// import "./index.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import PageTest from "./pages/PageTest";
+import ProductCreate from "./pages/ProductCreate";
+import NoPageFound from "./pages/NoPageFound";
+import Inventory from "./Pages/Inventory";
 
-function App() {
-  const [count, setCount] = useState(0);
-  const [products, setProducts] = useState([]);
 
-  const fetchProducts = async () => {
-    const response = await axios.get("http://localhost:8080/products");
-    setProducts(response.data.data);
-    console.log(response.data.data);
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  return (
-    <ul>
-      {products.map((p) => (
-        <li key={p.products_id}>{p.products_name} - {p.products_price}</li>
-      ))}
-    </ul>
-  );
+const App = () => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/inventory" element={<Inventory />} />
+                <Route path="/inventory/create" element={<ProductCreate />} />
+                <Route path="/test" element={<PageTest />} />
+                <Route path="*" element={<NoPageFound />} />
+            </Routes>
+        </BrowserRouter>
+    )
 }
-export default App
+
+export default App;
+ 

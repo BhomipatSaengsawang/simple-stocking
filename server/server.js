@@ -12,16 +12,18 @@ const corsOption = {
 };
 app.use(cors(corsOption));
 
-
+// End-point to product
 const productsRoutes = require('./routes/products');
-app.use('/products', productsRoutes)
+app.use('/api/products', productsRoutes)
 
+// Access server successfully
 app.get('/', (req, res) => {
     res.json({
         message: 'Welcome to my project'
     })
 });
 
+// Server health check 
 app.get('/health', (req, res) => {
     res.json({
         status: 'OK',
@@ -30,6 +32,7 @@ app.get('/health', (req, res) => {
     });
 });
 
+// Error 
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
@@ -38,6 +41,7 @@ app.use((err, req, res, next) => {
     });
 });
 
+// Listen to PORT
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log(`Enviroment: ${process.env.NODE_ENV}`);

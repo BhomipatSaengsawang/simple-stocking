@@ -9,10 +9,10 @@ router.get('/', productsController.getAll);
 router.get('/:id', productsController.getByid);
 
 // "POST" create new product
-router.post('/', productsController.addProduct);
+router.post('/add', productsController.addProduct);
 
 // "PUT" update product
-router.put('/:id', productsController.addProduct);
+router.put('/:id', productsController.upProduct);
 
 // "DELETE" product
 router.delete('/:id', productsController.delProduct);
