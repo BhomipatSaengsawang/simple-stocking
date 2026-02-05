@@ -49,7 +49,7 @@ exports.getByid = async (req, res) => {
 
 // "POST" new product
 exports.addProduct = async (req, res) => {
-    const { name, price } = req.body;
+    const { name, price, stock } = req.body;
 
     // Validation
     if(!name || !price) {
@@ -59,10 +59,20 @@ exports.addProduct = async (req, res) => {
         });
     }
 
+    // Validation stack
+    const productStock = stock !== undefined ? parseInt(stock) : 0;
+
+    if(productStock < 0) {
+        return res.status(400).json({
+            success: false,
+            error: 'Stock cannot be nagative'
+        });
+    }
+
     try {
         const result = await pool.query(
-            'INSERT INTO products (products_name, products_price) VALUES ($1, $2) RETURNING *',
-            [name, price]
+            'INSERT INTO products (products_name, products_price, products_stock) VALUES ($1, $2, $3) RETURNING *',
+            [name, price, productStock]
         );
 
         res.status(201).json({
@@ -88,49 +98,153 @@ exports.addProduct = async (req, res) => {
     }
 };
 
-// "PUT" update product
-exports.upProduct = async (req, res) => {
-    const { id } = req.params;
-    const { name, price } = req.body;
+    // // "PUT" update product
+    exports.upProduct = async (req, res) => {
+        const { id } = req.params;
+        const { name, price, stock } = req.body;
 
-    if(!name || !price) {
-        return res.status(400).json({
-            success: false,
-            error: 'name and price are required'
-        });
-    }
+        // Validation
+        if(!name && !price && stock === undefined) {
+            return res.status(400).json({
+                success: false,
+                error: 'At least one field (name, price, or stock) is required'
+            });
+        }
+
+        // Validation stock if provided
+        if(stock !== undefined && stock < 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'Stock cannot be negative'
+            });
+        }
+
+        try {
+            let updateFields = [];
+            let values = [];
+            let paramCount = 1;
+
+            if(name) {
+                updateFields.push(`products_name = $${paramCount}`);
+                values.push(name);
+                paramCount++;
+            }
+
+            if(price) {
+                updateFields.push(`products_price = $${paramCount}`);
+                values.push(price);
+                paramCount++;
+            }
+
+            if(stock !== undefined) {
+                updateFields.push(`products_stock = $${paramCount}`);
+                values.push(stock);
+                paramCount++;
+            }
+
+            values.push(id); // เพิ่ม id เป็น parameter สุดท้าย
+
+            const query = `
+                UPDATE products SET ${updateFields.join(', ')}
+                WHERE products_id = $${paramCount} RETURNING *`;
+            
+            const result = await pool.query(query, values);
+
+            if(result.rows.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Product not found'
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                message: 'Product updated successfully',
+                data: result.rows[0]
+            });
+        } catch (error) {
+            console.error('Error updating product:', error);
+
+            if(error.code === '23505') {
+                return res.status(409).json({
+                    success: false,
+                    error: 'Product name already exists'
+                });
+            }
+            
+            res.status(500).json({
+                success: false,
+                error: 'Failed to update product'
+            });
+        }
+
+    };
+
+// PATCH product
+exports.patchProduct = async (req, res) => {
+    const { id } = req.params;
+    const upProduct = req.body;
 
     try {
-        const result = await pool.query(
-            'UPDATE products SET products_name = $1, products_price = $2, updated_at = NOW() WHERE products_id = $3 RETURNING *',
-            [name, price, id]
-        );
+        const field = [];
+        const values = [];
+        let paramCount = 1;
+
+        if(upProduct.name !== undefined) {
+            field.push(`products_name = $${paramCount}`);
+            values.push(upProduct.name)
+            paramCount++;
+        }
+
+        if(upProduct.price !== undefined) {
+            field.push(`products_price = $${paramCount}`);
+            values.push(upProduct.price);
+            paramCount++;
+        }
+
+        if(upProduct.stock !== undefined) {
+            field.push(`products_stock = $${paramCount}`);
+            values.push(upProduct.stock);
+            paramCount++;
+        }
+
+        if(field.length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'No fields to update'
+            });
+        }
+
+        values.push(id);
+
+        const query = `
+            UPDATE products SET ${field.join(', ')}
+            WHERE products_id = $${paramCount}
+            RETURNING *`;
+        
+        console.log('Query:', query);
+        console.log('Values', values);
+
+        const result = await pool.query(query, values);
 
         if(result.rows.length === 0) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
-                error: 'Product not found' 
+                error: 'Prodcut not found'
             });
         }
 
         res.json({
             success: true,
             message: 'Product updated successfully',
+            updateFields: Object.keys(upProduct),
             data: result.rows[0]
         });
     } catch (error) {
         console.error('Error updating product:', error);
-
-        if (error.code === '23505') {
-            return res.status(409).json({ 
-                success: false,
-                error: 'Product already exists' 
-            });
-        }
-
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
-            error: 'Failed to update product' 
+            error: 'Failed to update product'
         });
     }
 };

@@ -14,6 +14,9 @@ router.post('/add', productsController.addProduct);
 // "PUT" update product
 router.put('/:id', productsController.upProduct);
 
+// "PATCH" product
+router.patch('/:id', productsController.patchProduct);
+
 // "DELETE" product
 router.delete('/:id', productsController.delProduct);
 

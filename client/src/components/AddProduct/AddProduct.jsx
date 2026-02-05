@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import axios from "axios";
 
 
 export default function AddProduct (){
+    const navigate = useNavigate();
+
     const [ product, setProduct ] = useState('');
     const [ price, setPrice ] = useState('');
     const [ loading, setLoading ] = useState(false);
@@ -18,6 +21,7 @@ export default function AddProduct (){
             });
 
             alert("Product added");
+            navigate('/inventory');
             setProduct('');
             setPrice('');
         } catch (error) {

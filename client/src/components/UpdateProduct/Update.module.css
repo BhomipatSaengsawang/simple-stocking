@@ -1,0 +1,307 @@
+.container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.formWrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.backBtn {
+    padding: 0.5rem 1rem;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.backBtn:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.formGroup label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+.input {
+    padding: 0.75rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.submitBtn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.submitBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.cancelBtn {
+    padding: 0.75rem 1.5rem;
+    background-color: #f8f9fa;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid #dee2e6;
+}
+
+.cancelBtn:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 0.5rem;
+    }
+
+    .formWrapper {
+        padding: 1.5rem;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .buttonGroup {
+        flex-direction: column;
+    }
+}
+
+.changed {
+    display: block;
+    margin-top: 0.25rem;
+    color: #f39c12;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    font-size: 1.2rem;
+    color: #667eea;
+}
+
+/* Loading State */
+.loadingState {
+    text-align: center;
+    padding: 3rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.errorState {
+    text-align: center;
+    padding: 3rem;
+    color: #e74c3c;
+}
+
+.errorState h3 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.errorState p {
+    margin-bottom: 2rem;
+    color: #666;
+}
+
+/* Required Field */
+.required {
+    color: #e74c3c;
+    margin-left: 0.25rem;
+}
+
+/* Disabled Button */
+.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* Button with Spinner */
+.submitBtn .spinner {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+.helpText {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Loading State */
+.loadingState {
+    text-align: center;
+    padding: 3rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.errorState {
+    text-align: center;
+    padding: 3rem;
+}
+
+.errorState h3 {
+    color: #e74c3c;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.errorState p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+/* Required */
+.required {
+    color: #e74c3c;
+    margin-left: 0.25rem;
+}
+
+/* Disabled */
+.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* Button Spinner */
+.submitBtn .spinner {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+/* Form Group Spacing */
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.formGroup:last-of-type {
+    margin-bottom: 2rem;
+}

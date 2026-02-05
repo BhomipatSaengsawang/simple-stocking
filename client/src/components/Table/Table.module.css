@@ -1,0 +1,103 @@
+.tableContainer {
+    max-width: 900px;
+    width: 95%;
+    margin: 2rem auto;
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background-color: white;
+    padding: 1.5rem; /* เพิ่ม padding ทั้ง container */
+}
+
+.headerSection {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+    /* ลบ padding: 0 0.5rem; ออก เพราะมี padding ใน container แล้ว */
+}
+
+.btnNew {
+    padding: 0.6rem 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.btnNew:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+}
+
+.customTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    font-size: 0.95rem;
+}
+
+.customTable th {
+    background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.customTable td {
+    padding: 12px 18px;
+    border-bottom: 1px solid #f1f3f5;
+    color: #495057;
+}
+
+.customTable tbody tr {
+    transition: all 0.2s ease;
+}
+
+.customTable tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+}
+
+.customTable tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.clickableRow {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clickableRow:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.clickableRow:active {
+    transform: scale(0.99);
+}
+
+/* เพิ่ม visual feedback */
+.customTable tbody tr.clickableRow:hover td {
+    color: #667eea;
+}
+
+.priceColumn {
+    width: 150px;
+    text-align: right;
+}
+
+.price {
+    font-weight: 600;
+    color: #2c3e50;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
