@@ -1,0 +1,37 @@
+.imageContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #f8f9fa; /* สีพื้นหลังเทาอ่อน */
+    border-radius: 8px;
+    border: 1px solid #eee; /* เส้นขอบบางๆ ให้ดูเป็นระเบียบ */
+    flex-shrink: 0; /* ป้องกันรูปภาพถูกบีบใน Flexbox */
+}
+
+.productImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* ทำให้รูปไม่เบี้ยว */
+    transition: opacity 0.3s;
+}
+
+/* ส่วนแสดงผล Icon */
+.iconPlaceholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: #cbd5e1; /* สีสัญลักษณ์เทาหม่น */
+}
+
+/* ขนาดของ Container */
+.small { width: 50px; height: 50px; }
+.medium { width: 150px; height: 150px; }
+.large { width: 300px; height: 300px; }
+
+/* ขนาดของ Icon ตามสัดส่วน Container */
+.small .defaultIcon { font-size: 1.2rem; }
+.medium .defaultIcon { font-size: 2.5rem; }
+.large .defaultIcon { font-size: 5rem; }

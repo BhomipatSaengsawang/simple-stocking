@@ -1,0 +1,211 @@
+/* Sidebar.module.css */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.logoArea {
+    padding: 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2563eb;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.navLinks {
+    flex: 1;
+    padding: 1rem;
+    list-style: none;
+    margin: 0;
+}
+
+.navItem {
+    margin-bottom: 0.5rem;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: #4b5563;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.link:hover {
+    background-color: #f3f4f6;
+    color: #2563eb;
+}
+
+.activeLink {
+    background-color: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.footer {
+    padding: 1rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.logoutBtn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    color: #dc2626;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.logoutBtn:hover {
+    background-color: #fef2f2;
+}
+
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: width 0.3s ease; /* ทำให้ย่อนุ่มนวล */
+    z-index: 1000;
+}
+
+.collapsed {
+    width: 80px; /* ขนาดตอนย่อ */
+}
+
+.header {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 70px;
+}
+
+.logoArea {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.toggleBtn {
+    background: #f3f4f6;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navLinks {
+    flex: 1;
+    padding: 0.5rem;
+    overflow-x: hidden; /* กันตัวหนังสือแลบออกมา */
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 0.8rem 1rem;
+    color: #4b5563;
+    text-decoration: none;
+    border-radius: 8px;
+    white-space: nowrap; /* สำคัญมาก: ไม่ให้ตัวอักษรขึ้นบรรทัดใหม่ */
+}
+
+.activeLink {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.icon {
+    min-width: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.footer {
+    padding: 1rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.logoutBtn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: none;
+    border: none;
+    color: #dc2626;
+    cursor: pointer;
+    padding: 0.8rem 1rem;
+    white-space: nowrap;
+}
+
+/* ===== User Profile ===== */
+.userProfile {
+    display        : flex;
+    align-items    : center;
+    gap            : 12px;
+    padding        : 16px;
+    margin         : 8px;
+    border-radius  : 12px;
+    background     : rgba(255, 255, 255, 0.08);
+    transition     : all 0.3s ease;
+}
+
+.userAvatar {
+    flex-shrink    : 0;
+    color          : #a5b4fc; /* สี Icon */
+}
+
+.userInfo {
+    overflow       : hidden; /* กัน text ล้น */
+}
+
+.userName {
+    margin         : 0;
+    font-size      : 14px;
+    font-weight    : 600;
+    color          : #ffffff;
+    white-space    : nowrap;
+    overflow       : hidden;
+    text-overflow  : ellipsis; /* ถ้าชื่อยาว → ตัดเป็น ... */
+}
+
+.userEmail {
+    margin         : 2px 0 4px;
+    font-size      : 11px;
+    color          : #94a3b8;
+    white-space    : nowrap;
+    overflow       : hidden;
+    text-overflow  : ellipsis;
+}
+
+.userRole {
+    font-size      : 11px;
+    color          : #a5b4fc;
+}
+

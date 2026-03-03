@@ -1,0 +1,29 @@
+/* components/StockBadge.module.css */
+
+.stockBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; /* ระยะห่างระหว่างจุดสีกับตัวหนังสือ */
+    font-size: 0.85rem; /* ปรับขนาดให้ชัดขึ้นเล็กน้อย */
+    font-weight: 600;
+}
+
+/* ลบสีพื้นหลังและเส้นขอบออกแบบเดิม */
+
+.badgeOutOfStock {
+    color: #dc3545; /* สีแดง */
+}
+
+.badgeLow {
+    color: #f59e0b; /* สีส้ม Amber (ดูชัดกว่าสีเหลืองเดิม) */
+}
+
+.badgeNormal {
+    color: #10b981; /* สีเขียว Emerald */
+}
+
+/* หากต้องการจุดวงกลมข้างหน้า (เลือกใช้หรือไม่ใช้ก็ได้) */
+.stockBadge::before {
+    content: "●";
+    font-size: 0.6rem;
+}

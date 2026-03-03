@@ -1,10 +1,10 @@
 import React from "react";
-import AddProduct from "../components/AddProduct/AddProduct";
+import ProductForm from "../components/ProductForm/ProductForm";
 
 function ProductCreate () {
     return (
         <div>
-            <AddProduct />
+            <ProductForm />
         </div>
     );
 }

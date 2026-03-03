@@ -1,0 +1,174 @@
+.pageWrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f2f5;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.cardHeader h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+.cardHeader p {
+    color: #6b7280;
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+}
+
+/* ===== Error / Success Box ===== */
+.errorBox {
+    background-color: #fee2e2;
+    color: #dc2626;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+}
+
+.successBox {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.successIcon {
+    width: 64px;
+    height: 64px;
+    background-color: #dcfce7;
+    color: #16a34a;
+    border-radius: 50%;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.successBox h3 {
+    color: #16a34a;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.successBox p {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+/* ===== Form ===== */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.formGroup label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.input {
+    padding: 0.625rem 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    outline: none;
+}
+
+.input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.input:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.inputError {
+    border-color: #dc2626 !important;
+}
+
+/* ===== Hints ===== */
+.hint {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.hintSuccess {
+    font-size: 0.75rem;
+    color: #16a34a;
+    font-weight: 500;
+}
+
+.hintError {
+    font-size: 0.75rem;
+    color: #dc2626;
+    font-weight: 500;
+}
+
+/* ===== Button ===== */
+.btnSubmit {
+    padding: 0.75rem;
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.btnSubmit:hover:not(:disabled) {
+    background-color: #4f46e5;
+}
+
+.btnSubmit:disabled {
+    background-color: #a5b4fc;
+    cursor: not-allowed;
+}
+
+/* ===== Login Link ===== */
+.loginLink {
+    text-align: center;
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.loginLink span {
+    color: #6366f1;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.loginLink span:hover {
+    text-decoration: underline;
+}

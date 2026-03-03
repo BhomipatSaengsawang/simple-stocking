@@ -1,0 +1,467 @@
+/* =================================================================
+   DESIGN TOKENS (CSS Variables)
+   ================================================================= */
+:root {
+    --color-primary: #7cb342;
+    --color-primary-hover: #689f38;
+    --color-bg-page: #f5f5f5;
+    --color-bg-card: #ffffff;
+    --color-bg-input: #fafafa;
+    --color-border: #eee;
+    --color-border-input: #ddd;
+    --color-text-main: #333;
+    --color-text-sub: #888;
+    --color-text-hint: #aaa;
+    --color-text-placeholder: #ccc;
+
+    --radius-card: 8px;
+    --radius-btn: 4px;
+
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    --transition-fast: 0.2s ease;
+}
+
+/* =================================================================
+   BASE
+   ================================================================= */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    /* ✅ ป้องกัน layout overflow */
+}
+
+/* =================================================================
+   PAGE LAYOUT
+   ================================================================= */
+.pageContainer {
+    background-color: var(--color-bg-page);
+    min-height: 100vh;
+}
+
+/* =================================================================
+   HEADER
+   ================================================================= */
+.topHeader {
+    background-color: var(--color-bg-card);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.headerLeft h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--color-text-main);
+}
+
+/* =================================================================
+   BUTTONS
+   ================================================================= */
+.iconBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    padding: 4px;
+    /* ✅ เพิ่ม clickable area */
+    line-height: 1;
+}
+
+.iconBtn:hover {
+    color: var(--color-text-main);
+    /* ✅ เพิ่ม hover state */
+}
+
+.saveBtn {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 8px 25px;
+    border-radius: var(--radius-btn);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.saveBtn:hover {
+    background-color: var(--color-primary-hover);
+}
+
+/* =================================================================
+   FORM CONTENT
+   ================================================================= */
+.formContent {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 40px;
+    background-color: var(--color-bg-card);
+    border-radius: var(--radius-btn);
+    box-shadow: var(--shadow-card);
+}
+
+/* =================================================================
+   GRID LAYOUTS
+   ================================================================= */
+.mainGrid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 60px;
+}
+
+.dualGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+/* =================================================================
+   INPUT GROUPS
+   ================================================================= */
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+}
+
+.inputGroup label {
+    font-size: 0.85rem;
+    color: var(--color-text-sub);
+    margin-bottom: 4px;
+}
+
+/* --- Underlined Input (Base Style) --- */
+.underlinedInput {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--color-border-input);
+    padding: 8px 0;
+    font-size: 1.1rem;
+    font-family: inherit;
+    /* ✅ ป้องกัน font reset */
+    outline: none;
+    background: transparent;
+    color: var(--color-text-main);
+    transition: border-color var(--transition-fast);
+}
+
+.underlinedInput:focus {
+    border-bottom: 2px solid var(--color-primary);
+}
+
+/* --- Input with Currency Symbol --- */
+.inputWithIcon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currencySymbol {
+    position: absolute;
+    left: 0;
+    color: #666;
+    font-weight: 100;
+    pointer-events: none;
+    /* ✅ ป้องกัน symbol บัง click */
+}
+
+/* ✅ ใช้ modifier class แทน !important */
+.underlinedInput--withPrefix {
+    padding-left: 20px;
+}
+
+/* --- Textarea --- */
+.posTextarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    /* ✅ เพิ่ม border-radius */
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    transition: border-color var(--transition-fast);
+    /* ✅ เพิ่ม transition */
+}
+
+.posTextarea:focus {
+    border-color: var(--color-primary);
+    /* ✅ เพิ่ม focus state */
+}
+
+/* =================================================================
+   CHECKBOX & RADIO
+   ================================================================= */
+.checkboxGroup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.checkboxGroup input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    /* ✅ เพิ่ม cursor */
+    flex-shrink: 0;
+}
+
+.section {
+    margin-bottom: 30px;
+}
+
+.sectionTitle {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-sub);
+    margin-bottom: 12px;
+}
+
+.radioGroup {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    /* ✅ ป้องกัน overflow บนมือถือ */
+}
+
+.radioGroup label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: var(--color-text-main);
+    cursor: pointer;
+}
+
+.radioGroup input[type="radio"] {
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    /* ✅ เพิ่ม cursor */
+}
+
+/* =================================================================
+   HINT TEXT
+   ================================================================= */
+.hint {
+    font-size: 0.75rem;
+    color: var(--color-text-hint);
+    margin-top: 5px;
+}
+
+/* =================================================================
+   IMAGE UPLOAD
+   ================================================================= */
+.imageUploadCard {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    cursor: pointer;
+    /* ✅ เพิ่ม cursor */
+    transition: border-color var(--transition-fast);
+}
+
+.imageUploadCard:hover {
+    border-color: var(--color-primary);
+}
+
+.imageLabel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: var(--color-bg-input);
+}
+
+.imagePreview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /* ✅ ป้องกัน inline gap */
+}
+
+.placeholder {
+    text-align: center;
+    color: var(--color-text-placeholder);
+}
+
+.placeholder p {
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+/* =================================================================
+   LOADING STATE
+   ================================================================= */
+.loading {
+    padding: 100px;
+    text-align: center;
+    color: var(--color-text-sub);
+}
+
+/* =================================================================
+   RESPONSIVE
+   ================================================================= */
+@media (max-width: 800px) {
+    .topHeader {
+        padding: 15px 20px;
+        /* ✅ ลด padding บนมือถือ */
+    }
+
+    .formContent {
+        margin: 15px;
+        padding: 20px;
+        /* ✅ ลด padding บนมือถือ */
+    }
+
+    .mainGrid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .imageColumn {
+        order: -1;
+        width: 200px;
+        margin: 0 auto 30px;
+    }
+
+    .dualGrid {
+        grid-template-columns: 1fr;
+        /* ✅ stack บนมือถือ */
+        gap: 0;
+    }
+}
+
+.customDropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdownHeader {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dropdownList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    z-index: 100;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdownItem {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    /* เส้นคั่นบางๆ */
+}
+
+.dropdownItem:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdownItem:first-child {
+    background-color: #f0f0f0;
+    /* สีเทาอ่อนสำหรับ No category ในรูป */
+    color: #333;
+}
+
+.addItemBtn {
+    padding: 12px 15px;
+    color: #444;
+    cursor: pointer;
+    border-top: 1px solid #ddd;
+    /* เส้นคั่นก่อนถึงปุ่ม Add */
+    font-weight: 500;
+}
+
+.addItemBtn:hover {
+    background-color: #f0f0f0;
+    color: #000;
+}
+
+/* เลเยอร์สีดำโปร่งใสเต็มจอ */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* สีดำจางๆ */
+    display: flex;
+    justify-content: center;
+    /* จัดกลางแนวนอน */
+    align-items: center;
+    /* จัดกลางแนวตั้ง */
+    z-index: 1000;
+    /* ให้อยู่เหนือทุกอย่าง */
+}
+
+/* กล่องสีขาวตรงกลาง */
+.categoryModal {
+    background-color: white;
+    padding: 24px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.categoryModal h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+}
+
+/* สไตล์พื้นฐานของปุ่มใน Modal */
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modalActions button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+}
+
+.modalActions button[type="button"]:first-child {
+    background-color: #79a54a;
+    /* สีเดียวกับปุ่มบันทึกในรูป */
+    color: white;
+    border: none;
+}
