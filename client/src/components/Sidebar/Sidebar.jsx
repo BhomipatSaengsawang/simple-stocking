@@ -1,108 +1,149 @@
-import React                        from 'react';
-import { NavLink, useNavigate }     from 'react-router-dom';
-import { jwtDecode }                from 'jwt-decode'; // ✅ เพิ่ม
-import { 
-    Package, 
-    ShoppingBag,
-    LogOut,
-    ChevronLeft,
-    ChevronRight,
-    UserCircle                       // ✅ เพิ่ม Icon User
+import React from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import {
+    Package, ShoppingBag, LayoutDashboard,
+    LogOut, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     const navigate = useNavigate();
 
-    // ===== ดึงข้อมูล User จาก Token =====
     const getUserFromToken = () => {
         try {
             const token = localStorage.getItem('token');
             if (!token) return null;
-
             const decoded = jwtDecode(token);
-            return decoded; // { user_id, username, email, role }
-        } catch (err) {
+            const now = Date.now() / 1000;
+            if (decoded.exp && decoded.exp < now) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                return null;
+            }
+            return decoded;
+        } catch {
             return null;
         }
     };
 
     const user = getUserFromToken();
 
-    // ===== Menu Items =====
     const menuItems = [
-        { path: '/inventory', name: 'คลังสินค้า', icon: <Package size={20} />     },
-        { path: '/sale',      name: 'ขายสินค้า',  icon: <ShoppingBag size={20} /> },
-        { path: '/dashboard', name: 'ภาพรวม',     icon: null                      }
+        { path: '/dashboard', name: 'ภาพรวม', icon: <LayoutDashboard size={18} />, accent: 'emerald' },
+        { path: '/inventory', name: 'คลังสินค้า', icon: <Package size={18} />, accent: 'green' },
+        { path: '/sale', name: 'ขายสินค้า', icon: <ShoppingBag size={18} />, accent: 'amber' },
     ];
 
-    // ===== Logout =====
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         navigate('/login');
     };
+
+    const initials = user?.username
+        ? user.username.slice(0, 2).toUpperCase()
+        : '??';
+
+    // Generate a consistent hue from username
+    const avatarHue = user?.username
+        ? user.username.charCodeAt(0) * 137 % 360
+        : 160;
 
     return (
         <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}>
 
-            {/* ===== Header: Logo + Toggle ===== */}
+            {/* Header */}
             <div className={styles.header}>
-                {!isCollapsed && <div className={styles.logoArea}>Bhomi</div>}
-                <button 
-                    className={styles.toggleBtn} 
+                {!isCollapsed && (
+                    <div className={styles.logo}>
+                        <img
+                            src="/easy pos.png"
+                            alt="EasyPOS"
+                            className={styles.logoImg}
+                        />
+                        <span className={styles.logoText}>EasyPOS</span>
+                    </div>
+                )}
+                <button
+                    className={styles.toggleBtn}
                     onClick={() => setIsCollapsed(!isCollapsed)}
+                    title={isCollapsed ? 'ขยาย' : 'ยุบ'}
                 >
-                    {isCollapsed 
-                        ? <ChevronRight size={18} /> 
-                        : <ChevronLeft  size={18} />
-                    }
+                    {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
                 </button>
             </div>
 
-            {/* ===== User Profile ===== */}
-            <div className={styles.userProfile}>
-                <UserCircle size={isCollapsed ? 28 : 40} className={styles.userAvatar} />
-                {!isCollapsed && (
-                    <div className={styles.userInfo}>
-                        {/* ดึง username และ email จาก Token */}
-                        <p className={styles.userName}>
-                            {user?.username || 'ไม่ทราบชื่อ'}
-                        </p>
-                        <p className={styles.userEmail}>
-                            {user?.email || ''}
-                        </p>
-                        <span className={styles.userRole}>
-                            {user?.role === 'admin' ? '👑 Admin' : '👤 User'}
-                        </span>
-                    </div>
-                )}
-            </div>
+            {/* Divider */}
+            <div className={styles.divider} />
 
-            {/* ===== Nav Links ===== */}
-            <nav className={styles.navLinks}>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {menuItems.map((item) => (
-                        <li key={item.path} className={styles.navItem}>
-                            <NavLink 
-                                to={item.path} 
-                                className={({ isActive }) => 
-                                    isActive 
-                                        ? `${styles.link} ${styles.activeLink}` 
-                                        : styles.link
+            {/* User Profile */}
+            {!isCollapsed ? (
+                <div className={styles.userProfile}>
+                    <div className={styles.avatarWrap}>
+                        <div
+                            className={styles.avatar}
+                            style={{ background: `hsl(${avatarHue}, 60%, 45%)` }}
+                        >
+                            {initials}
+                        </div>
+                        <span className={styles.onlineDot} />
+                    </div>
+                    <div className={styles.userInfo}>
+                        <p className={styles.userName}>{user?.username || 'ผู้ใช้'}</p>
+                        <p className={styles.userEmail}>{user?.email || 'ไม่มีอีเมล'}</p>
+                    </div>
+                </div>
+            ) : (
+                <div className={styles.userProfileCollapsed}>
+                    <div className={styles.avatarWrap}>
+                        <div
+                            className={styles.avatar}
+                            style={{ background: `hsl(${avatarHue}, 60%, 45%)` }}
+                            title={user?.username}
+                        >
+                            {initials}
+                        </div>
+                        <span className={styles.onlineDot} />
+                    </div>
+                </div>
+            )}
+
+            {/* Divider */}
+            <div className={styles.divider} style={{ marginTop: 12 }} />
+
+            {/* Nav */}
+            <nav className={styles.nav}>
+                {!isCollapsed && <p className={styles.navLabel}>เมนูหลัก</p>}
+                <ul>
+                    {menuItems.map(item => (
+                        <li key={item.path}>
+                            <NavLink
+                                to={item.path}
+                                className={({ isActive }) =>
+                                    `${styles.navLink} ${isActive ? `${styles.navLinkActive} ${styles[`accent_${item.accent}`]}` : ''}`
                                 }
+                                title={isCollapsed ? item.name : undefined}
                             >
-                                <span className={styles.icon}>{item.icon}</span>
-                                {!isCollapsed && <span>{item.name}</span>}
+                                <span className={styles.navIcon}>{item.icon}</span>
+                                {!isCollapsed && <span className={styles.navText}>{item.name}</span>}
                             </NavLink>
                         </li>
                     ))}
                 </ul>
             </nav>
 
-            {/* ===== Footer: Logout ===== */}
+            <div style={{ flex: 1 }} />
+
+            {/* Footer */}
             <div className={styles.footer}>
-                <button className={styles.logoutBtn} onClick={handleLogout}>
-                    <LogOut size={20} />
+                <div className={styles.divider} style={{ marginBottom: 12 }} />
+                <button
+                    className={styles.logoutBtn}
+                    onClick={handleLogout}
+                    title={isCollapsed ? 'ออกจากระบบ' : undefined}
+                >
+                    <LogOut size={16} />
                     {!isCollapsed && <span>ออกจากระบบ</span>}
                 </button>
             </div>

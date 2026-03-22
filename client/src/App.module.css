@@ -1,0 +1,74 @@
+/* App.module.css — Global shell layout */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap');
+
+/* ── Reset ────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #080d17;
+    font-family: 'Sarabun', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── App Shell ────────────────────────────── */
+.appShell {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: #080d17;
+}
+
+/* ── Main Content ─────────────────────────── */
+.mainContent {
+    flex: 1;
+    min-width: 0;           /* prevent flex overflow */
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #080d17;
+    /* Sidebar is 230px expanded */
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* When sidebar is collapsed (64px) */
+.mainCollapsed {
+    /* nothing extra needed — flex handles it */
+}
+
+/* Full-height mode: no padding, no scroll (Sale page) */
+.mainContentFull {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Scrollbar styling for main content */
+.mainContent::-webkit-scrollbar { width: 4px; }
+.mainContent::-webkit-scrollbar-track { background: transparent; }
+.mainContent::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.08);
+    border-radius: 99px;
+}
+.mainContent::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.14);
+}
+
+/* ── Welcome Page ─────────────────────────── */
+.welcomePage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 100vh;
+}
+
+.welcomePage h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: #334155;
+    letter-spacing: -0.3px;
+}

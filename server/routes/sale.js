@@ -1,17 +1,15 @@
 const express = require('express');
-const router = express.Router();
+const router  = express.Router();
 const saleController = require('../controllers/sale_con');
+const { protect }    = require('../middleware/auth.js'); // ✅ import protect
 
-// เส้นทางสำหรับบันทึกการขาย (Checkout)
 // POST /api/sales
-router.post('/', saleController.createSale);
+router.post('/',    protect, saleController.createSale);
 
-// เส้นทางสำหรับดึงประวัติการขายทั้งหมด
 // GET /api/sales
-router.get('/', saleController.getSalesHistory);
+router.get('/',     protect, saleController.getSalesHistory);
 
-// เส้นทางสำหรับดึงรายละเอียดรายบิล (ใช้ตอนดูใบเสร็จย้อนหลัง)
 // GET /api/sales/:id
-router.get('/:id', saleController.getSaleById);
+router.get('/:id',  protect, saleController.getSaleById);
 
 module.exports = router;

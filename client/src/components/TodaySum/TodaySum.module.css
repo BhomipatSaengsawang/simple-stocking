@@ -1,4 +1,4 @@
-/* OrderList.module.css — Dark premium, matches Dashboard theme */
+/* TodaySum.module.css — Dark premium, matches Dashboard theme */
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap');
 
 /* ── Base ─────────────────────────────────── */
@@ -53,12 +53,7 @@
 
 /* ── Header ───────────────────────────────── */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px;
     margin-bottom: 28px;
-    flex-wrap: wrap;
 }
 
 .titleBlock { display: flex; flex-direction: column; gap: 8px; }
@@ -67,9 +62,9 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(96,165,250,0.12);
-    border: 1px solid rgba(96,165,250,0.25);
-    color: #60a5fa;
+    background: rgba(251,191,36,0.12);
+    border: 1px solid rgba(251,191,36,0.25);
+    color: #fbbf24;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -90,39 +85,13 @@
 
 .subtitle { font-size: 14px; color: #475569; margin: 0; }
 
-/* ── Export Button ────────────────────────── */
-.exportBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 22px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: #fff;
-    border: none;
-    border-radius: 11px;
-    font-size: 14px;
-    font-weight: 700;
-    font-family: 'Sarabun', sans-serif;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 4px 15px rgba(34,197,94,0.25);
-}
-.exportBtn:hover:not(:disabled) {
-    opacity: 0.9;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(34,197,94,0.35);
-}
-.exportBtn:disabled { opacity: 0.4; cursor: not-allowed; }
-
 /* ── Summary Strip ────────────────────────── */
 .summaryStrip {
     display: flex;
     align-items: center;
-    gap: 0;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.07);
     border-radius: 14px;
-    padding: 0;
     margin-bottom: 20px;
     overflow: hidden;
 }
@@ -137,12 +106,19 @@
     flex: 1;
 }
 .summaryItem svg { color: #475569; flex-shrink: 0; }
-.summaryItem strong { color: #e2e8f0; font-weight: 700; font-family: 'Sora', sans-serif; font-size: 14px; }
+.summaryItem span { color: #475569; }
+.summaryItem strong {
+    color: #e2e8f0;
+    font-weight: 700;
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    margin-left: auto;
+}
 .greenText { color: #34d399 !important; }
+.blueText  { color: #60a5fa !important; }
 
 .stripDivider {
-    width: 1px;
-    height: 40px;
+    width: 1px; height: 40px;
     background: rgba(255,255,255,0.06);
     flex-shrink: 0;
 }
@@ -150,25 +126,22 @@
 /* ── Filter Bar ───────────────────────────── */
 .filterBar {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     gap: 16px;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.07);
     border-radius: 14px;
-    padding: 18px 22px;
+    padding: 16px 20px;
     margin-bottom: 20px;
-    flex-wrap: wrap;
 }
 
 .searchGroup {
     flex: 1;
-    min-width: 200px;
     position: relative;
 }
 .searchIcon {
     position: absolute;
-    left: 14px;
-    top: 50%;
+    left: 14px; top: 50%;
     transform: translateY(-50%);
     color: #475569;
     pointer-events: none;
@@ -186,34 +159,8 @@
     box-sizing: border-box;
     transition: border-color 0.2s;
 }
-.searchGroup input:focus { border-color: rgba(96,165,250,0.5); }
+.searchGroup input:focus { border-color: rgba(251,191,36,0.4); }
 .searchGroup input::placeholder { color: #334155; }
-
-.dateGroup { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
-
-.dateField { display: flex; flex-direction: column; gap: 5px; }
-.dateField label {
-    font-size: 10px;
-    font-weight: 700;
-    color: #334155;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-}
-.dateField input {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 10px;
-    padding: 9px 14px;
-    color: #e2e8f0;
-    font-size: 13px;
-    font-family: 'Sarabun', sans-serif;
-    outline: none;
-    color-scheme: dark;
-    transition: border-color 0.2s;
-}
-.dateField input:focus { border-color: rgba(96,165,250,0.5); }
-
-.dateSep { color: #334155; font-size: 18px; padding-bottom: 8px; }
 
 /* ── Table Card ───────────────────────────── */
 .tableCard {
@@ -229,9 +176,7 @@
     font-size: 14px;
 }
 
-.table thead tr {
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
+.table thead tr { border-bottom: 1px solid rgba(255,255,255,0.06); }
 
 .table th {
     padding: 14px 20px;
@@ -281,16 +226,19 @@
     font-family: 'Sora', sans-serif;
     font-size: 13px;
     font-weight: 700;
-    color: #60a5fa;
-    background: rgba(96,165,250,0.08);
-    border: 1px solid rgba(96,165,250,0.15);
+    color: #fbbf24;
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.15);
     padding: 4px 10px;
     border-radius: 8px;
 }
 
-.dateCell { display: flex; flex-direction: column; gap: 2px; }
-.dateMain { font-size: 13px; font-weight: 600; color: #cbd5e1; }
-.dateSub { font-size: 11px; color: #475569; }
+.timeCell {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #cbd5e1 !important;
+}
 
 .paymentTag {
     background: rgba(255,255,255,0.06);
@@ -320,31 +268,31 @@
     letter-spacing: 0.03em;
 }
 
-.actionCell { text-align: center; }
+.actionCell {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
 
-.viewBtn {
+.iconBtn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    width: 34px; height: 34px;
     background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #94a3b8;
-    font-size: 12px;
-    font-weight: 600;
-    font-family: 'Sarabun', sans-serif;
-    padding: 7px 14px;
+    border: 1px solid rgba(255,255,255,0.09);
+    color: #64748b;
     border-radius: 9px;
     cursor: pointer;
     transition: all 0.2s;
 }
-.viewBtn:hover {
-    background: rgba(96,165,250,0.1);
-    border-color: rgba(96,165,250,0.3);
-    color: #60a5fa;
-    transform: translateX(2px);
+.iconBtn:hover {
+    background: rgba(251,191,36,0.1);
+    border-color: rgba(251,191,36,0.25);
+    color: #fbbf24;
 }
 
-/* ── Loading Dots ─────────────────────────── */
+/* ── Empty / Loading ──────────────────────── */
 .emptyRow {
     text-align: center;
     padding: 60px 0 !important;
@@ -371,7 +319,39 @@
     40% { opacity: 1; transform: scale(1.1); }
 }
 
-/* ── Modal ────────────────────────────────── */
+/* ── Responsive ───────────────────────────── */
+@media (max-width: 768px) {
+    .inner { padding: 20px 16px; }
+    .title { font-size: 22px; }
+    .summaryStrip { flex-direction: column; }
+    .stripDivider { width: 100%; height: 1px; }
+    .summaryItem { justify-content: space-between; }
+}
+
+/* ── View Button (replaces two icon buttons) ── */
+.viewBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Sarabun', sans-serif;
+    padding: 7px 14px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.viewBtn:hover {
+    background: rgba(251,191,36,0.1);
+    border-color: rgba(251,191,36,0.3);
+    color: #fbbf24;
+    transform: translateX(2px);
+}
+
+/* ── Modal Overlay ────────────────────────── */
 .overlay {
     position: fixed;
     inset: 0;
@@ -391,7 +371,7 @@
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 20px;
     width: 100%;
-    max-width: 580px;
+    max-width: 560px;
     max-height: 85vh;
     overflow-y: auto;
     box-shadow: 0 32px 80px rgba(0,0,0,0.7);
@@ -406,7 +386,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 24px 28px 20px;
+    padding: 22px 26px 18px;
     border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
@@ -415,11 +395,11 @@
     align-items: center;
     gap: 14px;
 }
-.modalIcon { color: #60a5fa; }
+.modalIcon { color: #fbbf24; }
 
 .modalTitleGroup h2 {
     font-family: 'Sora', sans-serif;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     color: #f1f5f9;
     margin: 0 0 2px;
@@ -428,24 +408,23 @@
     font-size: 12px;
     color: #475569;
     margin: 0;
-    font-family: 'Sora', monospace;
 }
 
 .closeBtn {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #64748b;
-    border-radius: 9px;
-    width: 36px; height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 34px; height: 34px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 9px;
+    color: #64748b;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
 }
 .closeBtn:hover { background: rgba(255,255,255,0.1); color: #e2e8f0; }
 
-.modalBody { padding: 24px 28px 28px; }
+.modalBody { padding: 22px 26px 26px; }
 
 .modalLoading {
     display: flex;
@@ -461,37 +440,40 @@
 .metaGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 22px;
 }
 
 .metaItem {
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.07);
     border-radius: 12px;
-    padding: 14px 16px;
+    padding: 12px 14px;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
-.metaItem span { font-size: 11px; color: #475569; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
-.metaItem strong { font-size: 14px; color: #e2e8f0; font-weight: 600; }
+.metaItem span {
+    font-size: 10px;
+    font-weight: 700;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+.metaItem strong { font-size: 13px; color: #e2e8f0; font-weight: 600; }
 
-/* Items */
-.itemsSection { margin-bottom: 20px; }
+/* Items list */
+.itemsSection { margin-bottom: 18px; }
 .itemsLabel {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     color: #334155;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin: 0 0 10px;
+    margin: 0 0 8px;
 }
 
 .itemsList {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
     background: rgba(255,255,255,0.02);
     border: 1px solid rgba(255,255,255,0.06);
     border-radius: 14px;
@@ -502,7 +484,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
+    padding: 11px 14px;
     border-bottom: 1px solid rgba(255,255,255,0.04);
     transition: background 0.15s;
 }
@@ -517,50 +499,38 @@
 }
 .itemDot {
     width: 6px; height: 6px;
-    background: #60a5fa;
+    background: #fbbf24;
     border-radius: 50%;
     flex-shrink: 0;
 }
 .itemName span { font-size: 13px; color: #cbd5e1; font-weight: 500; }
 
-.itemMeta { display: flex; align-items: center; gap: 12px; }
-.itemQty { font-size: 12px; color: #475569; }
+.itemMeta { display: flex; align-items: center; gap: 10px; }
+.itemQty  { font-size: 12px; color: #475569; }
 .itemPrice { font-size: 12px; color: #64748b; }
 .itemSubtotal {
     font-family: 'Sora', sans-serif;
     font-size: 13px;
     font-weight: 700;
     color: #94a3b8;
-    min-width: 80px;
+    min-width: 76px;
     text-align: right;
 }
 
-/* Total */
+/* Total row */
 .totalRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(52,211,153,0.06);
-    border: 1px solid rgba(52,211,153,0.15);
+    background: rgba(251,191,36,0.06);
+    border: 1px solid rgba(251,191,36,0.15);
     border-radius: 14px;
-    padding: 16px 20px;
+    padding: 14px 18px;
 }
-.totalRow span { font-size: 14px; color: #64748b; font-weight: 600; }
+.totalRow span { font-size: 13px; color: #64748b; font-weight: 600; }
 .totalAmount {
     font-family: 'Sora', sans-serif;
     font-size: 22px;
     font-weight: 800;
-    color: #34d399;
-}
-
-/* ── Responsive ───────────────────────────── */
-@media (max-width: 768px) {
-    .inner { padding: 20px 16px; }
-    .title { font-size: 22px; }
-    .filterBar { flex-direction: column; align-items: stretch; }
-    .summaryStrip { flex-direction: column; }
-    .stripDivider { width: 100%; height: 1px; }
-    .metaGrid { grid-template-columns: 1fr; }
-    .itemMeta { gap: 8px; }
-    .modal { border-radius: 16px; }
+    color: #fbbf24;
 }

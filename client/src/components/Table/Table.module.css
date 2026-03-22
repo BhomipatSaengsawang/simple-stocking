@@ -1,131 +1,475 @@
-:root {
-    --gv-fg: #3c3836;
-    --gv-gray: #7c6f64;
-    --gv-border: #d5c4a1;
-    --gv-blue: #458588; /* สีในรูปตัวอย่าง */
-    --gv-green: #98971a; /* สีในรูปตัวอย่าง */
+/* Table.module.css — Dark premium, matches Dashboard theme */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap');
+
+/* ── Base ─────────────────────────────────── */
+.page {
+    min-height: 100vh;
+    background: #080d17;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Sarabun', sans-serif;
 }
 
-/* 1. แก้ไข Container จาก 98% เป็น 100% และเอา margin auto ออก */
-.tableContainer {
-    width: 100%;             /* ขยายเต็มความกว้าง */
-    min-height: 100vh;      /* ขยายเต็มความสูงหน้าจอ */
-    background-color: #ffffff;
-    padding: 20px;          /* ระยะห่างจากขอบจอเล็กน้อย */
-    box-sizing: border-box; /* สำคัญ: ป้องกันการเกิดแถบเลื่อนแนวนอน */
+.blob1 {
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(34,197,94,0.07) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+}
+.blob2 {
+    position: fixed;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(96,165,250,0.06) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
 }
 
-/* 2. จัดระเบียบแถวส่วนหัวให้กระจายตัวเต็มพื้นที่ */
-.headerLayout {
+.inner {
+    position: relative; z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 36px 32px;
+}
+
+/* ── Header ───────────────────────────────── */
+.header {
     display: flex;
-    align-items: center; 
-    justify-content: space-between; /* แก้จาก bween เป็น space-between */
+    justify-content: space-between;
+    align-items: flex-start;
     gap: 20px;
-    width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
 }
 
-.headerLayout h2 {
-    font-size: 1.5rem;
+.titleBlock { display: flex; flex-direction: column; gap: 8px; }
+
+.titleBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(34,197,94,0.12);
+    border: 1px solid rgba(34,197,94,0.25);
+    color: #22c55e;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+    width: fit-content;
+}
+
+.title {
+    font-family: 'Sora', sans-serif;
+    font-size: 28px;
     font-weight: 800;
-    white-space: nowrap;
-    color: var(--gv-fg);
+    color: #f1f5f9;
     margin: 0;
+    letter-spacing: -0.4px;
 }
 
-/* 3. ให้กลุ่มช่องค้นหาและตัวกรองขยายพื้นที่ตรงกลาง */
-.filterGroup {
+.subtitle { font-size: 14px; color: #475569; margin: 0; }
+
+.headerActions {
     display: flex;
+    align-items: center;
     gap: 10px;
-    flex: 1;                 /* ยืดหยุ่นเพื่อขยายเต็มพื้นที่ว่าง */
+    flex-wrap: wrap;
 }
 
-.searchWrapper { 
-    flex: 2;                 /* ช่องค้นหากว้างกว่าตัวอื่น */
-    position: relative; 
-}
-
-.selectWrapper { 
-    flex: 1;                 /* Dropdown กว้างเท่ากัน */
-    position: relative; 
-}
-
-.searchIcon, .filterIcon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--gv-gray);
-    pointer-events: none;
-    z-index: 10;
-}
-
-.searchInput, .dropdown {
-    width: 100%;
-    height: 40px;
-    padding: 0 10px 0 35px;
-    border: 1px solid var(--gv-border);
-    border-radius: 6px;
-    font-size: 0.9rem;
-    background: #fff;
-    box-sizing: border-box;
-}
-
-/* 4. ปุ่มจัดกลุ่มไว้ฝั่งขวา */
-.actionButtons {
-    display: flex;
-    flex-direction: column; 
-    gap: 4px;
-    min-width: fit-content;
-}
-
-.btnExport {
-    background-color: var(--gv-green);
-    color: white;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 6px;
-    font-size: 0.85rem;
+/* ── Buttons ──────────────────────────────── */
+.exportBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.25);
+    color: #22c55e;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Sarabun', sans-serif;
+    border-radius: 11px;
     cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
-    justify-content: center;
+    transition: all 0.2s;
 }
+.exportBtn:hover:not(:disabled) {
+    background: rgba(34,197,94,0.18);
+    border-color: rgba(34,197,94,0.4);
+    transform: translateY(-1px);
+}
+.exportBtn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.btnNew {
-    background-color: var(--gv-blue);
-    color: white !important;
+.newBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Sarabun', sans-serif;
+    border-radius: 11px;
     text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    display: flex; align-items: center; gap: 8px;
-    justify-content: center;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(34,197,94,0.25);
+}
+.newBtn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(34,197,94,0.35);
 }
 
-/* 5. ตารางขยายเต็มหน้าจอ */
-.tableWrapper {
-    width: 100%;
-    margin-top: 1rem;
-    border: 1px solid #eee; /* ใส่กรอบจางๆ ให้ตารางดูเป็นระเบียบ */
-    border-radius: 8px;
+/* ── Summary Strip ────────────────────────── */
+.summaryStrip {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    margin-bottom: 20px;
     overflow: hidden;
 }
 
-.customTable {
-    width: 100%;             /* ตารางต้อง 100% */
-    border-collapse: collapse;
+.summaryItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 24px;
+    font-size: 13px;
+    flex: 1;
 }
-
-.customTable th, .customTable td {
-    text-align: left;
-    padding: 14px 20px;      /* เพิ่มพื้นที่ว่างให้ดูพรีเมียม */
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.customTable th {
-    background-color: #f9f9f9;
-    font-size: 0.85rem;
+.summaryItem svg { color: #475569; flex-shrink: 0; }
+.summaryItem span { color: #475569; }
+.summaryItem strong {
+    color: #e2e8f0;
     font-weight: 700;
-    color: var(--gv-gray);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    margin-left: auto;
+}
+.blueText  { color: #60a5fa !important; }
+.amberText { color: #fbbf24 !important; }
+.roseText  { color: #fb7185 !important; }
+.mutedText { color: #334155 !important; }
+
+.stripDivider {
+    width: 1px; height: 36px;
+    background: rgba(255,255,255,0.06);
+    flex-shrink: 0;
+}
+
+/* ── Filter Bar ───────────────────────────── */
+.filterBar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.searchGroup {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.searchIcon {
+    position: absolute;
+    left: 13px;
+    color: #475569;
+    pointer-events: none;
+}
+.searchGroup input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 10px;
+    padding: 9px 36px;
+    color: #e2e8f0;
+    font-size: 13px;
+    font-family: 'Sarabun', sans-serif;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+.searchGroup input:focus { border-color: rgba(34,197,94,0.4); }
+.searchGroup input::placeholder { color: #334155; }
+
+.clearBtn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #475569;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 4px;
+    transition: color 0.2s;
+}
+.clearBtn:hover { color: #94a3b8; }
+
+.selectWrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.filterIcon {
+    position: absolute;
+    left: 12px;
+    color: #475569;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 10px;
+    padding: 9px 32px 9px 32px;
+    color: #e2e8f0;
+    font-size: 13px;
+    font-family: 'Sarabun', sans-serif;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+    transition: border-color 0.2s;
+}
+.select:focus { border-color: rgba(34,197,94,0.4); }
+.select option { background: #1e293b; color: #e2e8f0; }
+
+.refreshBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 10px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+.refreshBtn:hover { background: rgba(255,255,255,0.09); color: #94a3b8; }
+
+/* ── Table Card ───────────────────────────── */
+.tableCard {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table thead tr { border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+.table th {
+    padding: 13px 18px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: #334155;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.textRight { text-align: right !important; }
+.textCenter { text-align: center !important; }
+
+.sortBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'Sarabun', sans-serif;
+    transition: color 0.2s;
+}
+.sortBtn:hover { color: #94a3b8; }
+
+@keyframes rowIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.tableRow {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    animation: rowIn 0.3s ease both;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.tableRow:last-child { border-bottom: none; }
+.tableRow:hover { background: rgba(255,255,255,0.03); }
+
+.table td { padding: 14px 18px; color: #94a3b8; vertical-align: middle; }
+
+/* Product cell */
+.productCell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.productImageWrap {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.productImageWrap img,
+.productImageWrap > * {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.productName {
+    font-size: 14px;
+    font-weight: 600;
+    color: #cbd5e1;
+}
+
+/* Category badge */
+.categoryBadge {
+    background: rgba(96,165,250,0.08);
+    border: 1px solid rgba(96,165,250,0.15);
+    color: #60a5fa;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+/* Price & stock */
+.priceCell {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #e2e8f0 !important;
+}
+.stockQty {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8 !important;
+}
+
+.dateCell {
+    font-size: 12px;
+    color: #475569 !important;
+}
+
+.untrackedLabel { color: #334155; font-size: 12px; }
+
+/* Delete button */
+.deleteBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    background: rgba(251,113,133,0.08);
+    border: 1px solid rgba(251,113,133,0.15);
+    color: #fb7185;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.deleteBtn:hover:not(:disabled) {
+    background: rgba(251,113,133,0.18);
+    border-color: rgba(251,113,133,0.35);
+    transform: scale(1.05);
+}
+.deleteBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.deletingDot {
+    width: 8px; height: 8px;
+    background: #fb7185;
+    border-radius: 50%;
+    animation: blink 0.8s ease-in-out infinite;
+}
+@keyframes blink {
+    0%, 100% { opacity: 0.3; } 50% { opacity: 1; }
+}
+
+/* ── Loading ──────────────────────────────── */
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 80px 0;
+    color: #475569;
+    font-size: 14px;
+}
+
+.loadingDots {
+    display: flex;
+    gap: 6px;
+}
+.loadingDots span {
+    width: 8px; height: 8px;
+    background: #334155;
+    border-radius: 50%;
+    animation: dotPulse 1.2s ease-in-out infinite;
+}
+.loadingDots span:nth-child(2) { animation-delay: 0.2s; }
+.loadingDots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+    40%           { opacity: 1;   transform: scale(1.1); }
+}
+
+/* ── Empty ────────────────────────────────── */
+.emptyRow {
+    text-align: center;
+    padding: 60px 0 !important;
+    color: #334155;
+    font-size: 14px;
+}
+
+/* ── Spin ─────────────────────────────────── */
+.spin { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ───────────────────────────── */
+@media (max-width: 1024px) {
+    .inner { padding: 24px 20px; }
+}
+@media (max-width: 768px) {
+    .inner { padding: 20px 14px; }
+    .title { font-size: 22px; }
+    .header { flex-direction: column; }
+    .summaryStrip { flex-wrap: wrap; }
+    .filterBar { flex-direction: column; align-items: stretch; }
+    .searchGroup { min-width: unset; }
 }

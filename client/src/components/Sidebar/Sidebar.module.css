@@ -1,211 +1,302 @@
-/* Sidebar.module.css */
+/* Sidebar.module.css — Dark premium, matches Dashboard theme */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap');
+
+/* ── Sidebar shell ────────────────────────── */
 .sidebar {
-    width: 260px;
-    height: 100vh;
-    background-color: #ffffff;
-    border-right: 1px solid #e5e7eb;
     display: flex;
     flex-direction: column;
-    position: fixed;
-    left: 0;
-    top: 0;
-}
-
-.logoArea {
-    padding: 2rem;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #2563eb;
-    border-bottom: 1px solid #f3f4f6;
-}
-
-.navLinks {
-    flex: 1;
-    padding: 1rem;
-    list-style: none;
-    margin: 0;
-}
-
-.navItem {
-    margin-bottom: 0.5rem;
-}
-
-.link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0.75rem 1rem;
-    text-decoration: none;
-    color: #4b5563;
-    border-radius: 8px;
-    transition: all 0.2s;
-}
-
-.link:hover {
-    background-color: #f3f4f6;
-    color: #2563eb;
-}
-
-.activeLink {
-    background-color: #eff6ff;
-    color: #2563eb;
-    font-weight: 600;
-}
-
-.footer {
-    padding: 1rem;
-    border-top: 1px solid #f3f4f6;
-}
-
-.logoutBtn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0.75rem 1rem;
-    border: none;
-    background: none;
-    color: #dc2626;
-    cursor: pointer;
-    border-radius: 8px;
-}
-
-.logoutBtn:hover {
-    background-color: #fef2f2;
-}
-
-.sidebar {
-    width: 260px;
+    width: 230px;
+    min-width: 230px;
     height: 100vh;
-    background-color: #ffffff;
-    border-right: 1px solid #e5e7eb;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    left: 0;
-    top: 0;
-    transition: width 0.3s ease; /* ทำให้ย่อนุ่มนวล */
-    z-index: 1000;
+    background: #080d17;
+    border-right: 1px solid rgba(255,255,255,0.07);
+    transition: width 0.25s cubic-bezier(0.4,0,0.2,1),
+                min-width 0.25s cubic-bezier(0.4,0,0.2,1);
+    overflow: hidden;
+    position: relative;
+    z-index: 100;
+    font-family: 'Sarabun', sans-serif;
 }
 
 .collapsed {
-    width: 80px; /* ขนาดตอนย่อ */
+    width: 64px;
+    min-width: 64px;
 }
 
+/* ── Header ───────────────────────────────── */
 .header {
-    padding: 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 70px;
+    padding: 20px 14px 16px;
+    flex-shrink: 0;
 }
 
-.logoArea {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #2563eb;
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.logoIcon {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    background: rgba(52, 211, 153, 0.15);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    border-radius: 8px;
+    color: #34d399;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logoText {
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: #f1f5f9;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
 }
 
 .toggleBtn {
-    background: #f3f4f6;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.navLinks {
-    flex: 1;
-    padding: 0.5rem;
-    overflow-x: hidden; /* กันตัวหนังสือแลบออกมา */
-}
-
-.link {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 0.8rem 1rem;
-    color: #4b5563;
-    text-decoration: none;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
     border-radius: 8px;
-    white-space: nowrap; /* สำคัญมาก: ไม่ให้ตัวอักษรขึ้นบรรทัดใหม่ */
+    color: #475569;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s;
+}
+.toggleBtn:hover { background: rgba(255,255,255,0.09); color: #94a3b8; }
+
+/* ── Divider ──────────────────────────────── */
+.divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 0 14px;
+    flex-shrink: 0;
 }
 
-.activeLink {
-    background-color: #eff6ff;
-    color: #2563eb;
+/* ── User Profile ─────────────────────────── */
+.userProfile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 14px 0;
+    flex-shrink: 0;
+    min-width: 0;
 }
 
-.icon {
-    min-width: 24px;
+.userProfileCollapsed {
     display: flex;
     justify-content: center;
+    padding: 14px 0 0;
+    flex-shrink: 0;
 }
 
+.avatarWrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.onlineDot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 9px;
+    height: 9px;
+    background: #34d399;
+    border: 2px solid #080d17;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(52,211,153,0.6);
+}
+
+.userInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.userName {
+    font-size: 13px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.userEmail {
+    font-size: 11px;
+    color: #334155;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+/* ── Nav ──────────────────────────────────── */
+.nav {
+    flex-shrink: 0;
+    padding: 0 10px;
+}
+
+.navLabel {
+    font-size: 10px;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0 6px;
+    margin: 0 0 6px;
+    height: 16px;
+}
+
+.nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.navLink {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: #475569;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.navLink:hover {
+    background: rgba(255,255,255,0.05);
+    color: #94a3b8;
+}
+
+.navLinkActive {
+    color: #f1f5f9 !important;
+}
+
+/* Accent colors */
+.accent_emerald { background: rgba(52,211,153,0.1) !important; }
+.accent_emerald .navIcon { color: #34d399; }
+.accent_emerald::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    background: #34d399;
+    border-radius: 0 3px 3px 0;
+}
+
+.accent_green { background: rgba(34,197,94,0.1) !important; }
+.accent_green .navIcon { color: #22c55e; }
+.accent_green::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    background: #22c55e;
+    border-radius: 0 3px 3px 0;
+}
+
+.accent_amber { background: rgba(251,191,36,0.1) !important; }
+.accent_amber .navIcon { color: #fbbf24; }
+.accent_amber::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    background: #fbbf24;
+    border-radius: 0 3px 3px 0;
+}
+
+.navIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: inherit;
+    transition: color 0.15s;
+}
+
+.navText { flex: 1; }
+
+/* ── Footer ───────────────────────────────── */
 .footer {
-    padding: 1rem;
-    border-top: 1px solid #f3f4f6;
+    padding: 0 10px 16px;
+    flex-shrink: 0;
 }
 
 .logoutBtn {
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    gap: 10px;
     width: 100%;
-    background: none;
-    border: none;
-    color: #dc2626;
+    padding: 10px 12px;
+    background: rgba(251,113,133,0.06);
+    border: 1px solid rgba(251,113,133,0.12);
+    border-radius: 12px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Sarabun', sans-serif;
     cursor: pointer;
-    padding: 0.8rem 1rem;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
     white-space: nowrap;
+    overflow: hidden;
+}
+.logoutBtn:hover {
+    background: rgba(251,113,133,0.12);
+    border-color: rgba(251,113,133,0.25);
+    color: #fb7185;
 }
 
-/* ===== User Profile ===== */
-.userProfile {
-    display        : flex;
-    align-items    : center;
-    gap            : 12px;
-    padding        : 16px;
-    margin         : 8px;
-    border-radius  : 12px;
-    background     : rgba(255, 255, 255, 0.08);
-    transition     : all 0.3s ease;
+.logoImg {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    /* Invert to make it visible on dark background */
+    filter: brightness(0) invert(1) opacity(0.85);
 }
-
-.userAvatar {
-    flex-shrink    : 0;
-    color          : #a5b4fc; /* สี Icon */
-}
-
-.userInfo {
-    overflow       : hidden; /* กัน text ล้น */
-}
-
-.userName {
-    margin         : 0;
-    font-size      : 14px;
-    font-weight    : 600;
-    color          : #ffffff;
-    white-space    : nowrap;
-    overflow       : hidden;
-    text-overflow  : ellipsis; /* ถ้าชื่อยาว → ตัดเป็น ... */
-}
-
-.userEmail {
-    margin         : 2px 0 4px;
-    font-size      : 11px;
-    color          : #94a3b8;
-    white-space    : nowrap;
-    overflow       : hidden;
-    text-overflow  : ellipsis;
-}
-
-.userRole {
-    font-size      : 11px;
-    color          : #a5b4fc;
-}
-

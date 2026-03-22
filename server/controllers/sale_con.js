@@ -8,15 +8,14 @@ const ALLOWED_PAYMENT_METHODS = ['cash', 'credit_card', 'qr_code'];
 // =================================================================
 // HELPERS
 // =================================================================
-
 const validateItems = (items) => {
     if (!Array.isArray(items) || items.length === 0) {
         return 'No items in cart';
     }
     for (const item of items) {
         const { product_id, quantity, unit_price } = item;
-        if (!product_id)                  return 'product_id is required for all items';
-        if (!quantity || quantity <= 0)   return `Invalid quantity for product ID ${product_id}`;
+        if (!product_id) return 'product_id is required for all items';
+        if (!quantity || quantity <= 0) return `Invalid quantity for product ID ${product_id}`;
         if (!unit_price || unit_price < 0) return `Invalid unit_price for product ID ${product_id}`;
     }
     return null;
@@ -25,9 +24,9 @@ const validateItems = (items) => {
 // =================================================================
 // CREATE SALE (CHECKOUT)  →  POST /sales
 // =================================================================
-
 exports.createSale = async (req, res) => {
     const { payment_method, items } = req.body;
+    const userId = req.user.user_id; // ✅
 
     const itemError = validateItems(items);
     if (itemError) {
@@ -36,8 +35,8 @@ exports.createSale = async (req, res) => {
 
     if (!payment_method || !ALLOWED_PAYMENT_METHODS.includes(payment_method)) {
         return res.status(400).json({
-            success : false,
-            error   : `payment_method must be one of: ${ALLOWED_PAYMENT_METHODS.join(', ')}`,
+            success: false,
+            error: `payment_method must be one of: ${ALLOWED_PAYMENT_METHODS.join(', ')}`,
         });
     }
 
@@ -52,25 +51,27 @@ exports.createSale = async (req, res) => {
 
         // 1. INSERT หัวบิล
         const { rows: saleRows } = await client.query(
-            `INSERT INTO sales (total_amount, payment_method)
-             VALUES ($1, $2)
-             RETURNING *`,
-            [total_amount, payment_method]
+            `INSERT INTO sales (user_id, total_amount, payment_method)
+            VALUES ($1, $2, $3)
+            RETURNING sale_id, order_id`,
+            [userId, total_amount, payment_method]
         );
-        const saleId = saleRows[0].sale_id;
+        const saleId  = saleRows[0].sale_id;
+        const orderId = saleRows[0].order_id;
 
         // 2. วนลูปแต่ละ item
         for (const item of items) {
             const { product_id, quantity, unit_price } = item;
             const subtotal = quantity * unit_price;
 
-            // 2.1 ✅ ดึงข้อมูลสินค้าพร้อม track_stock และ Lock แถว
+            // 2.1 ✅ verify product belongs to this user + lock row
             const { rows: stockRows } = await client.query(
                 `SELECT products_name, products_stock, track_stock
                  FROM   products
                  WHERE  products_id = $1
-                 FOR UPDATE`, 
-                [product_id]
+                   AND  user_id     = $2
+                 FOR UPDATE`,
+                [product_id, userId]
             );
 
             if (stockRows.length === 0) {
@@ -79,32 +80,30 @@ exports.createSale = async (req, res) => {
 
             const product = stockRows[0];
 
-            // 2.2 ✅ ตรวจสอบและตัดสต็อก (เฉพาะเมื่อ track_stock เป็น TRUE)
+            // 2.2 ตรวจสอบและตัดสต็อก (เฉพาะเมื่อ track_stock เป็น TRUE)
             if (product.track_stock === true) {
-                // ตรวจสอบสต็อก
                 if (product.products_stock < quantity) {
                     throw {
-                        status  : 400,
-                        message : `"${product.products_name}" has insufficient stock `
-                                + `(available: ${product.products_stock}, requested: ${quantity})`,
+                        status: 400,
+                        message: `"${product.products_name}" has insufficient stock `
+                            + `(available: ${product.products_stock}, requested: ${quantity})`,
                     };
                 }
 
-                // ตัดสต็อก
                 await client.query(
                     `UPDATE products
                      SET    products_stock = products_stock - $1
-                     WHERE  products_id    = $2`,
-                    [quantity, product_id]
+                     WHERE  products_id    = $2
+                       AND  user_id        = $3`,
+                    [quantity, product_id, userId]
                 );
-            } 
-            // 💡 ถ้า track_stock เป็น FALSE ระบบจะข้ามการเช็คและการตัดสต็อกไปเลย
+            }
 
-            // 2.3 INSERT รายการสินค้า (บันทึกประวัติการขายเสมอ ไม่ว่าจะตัดสต็อกหรือไม่)
+            // 2.3 INSERT รายการสินค้า
             await client.query(
-                `INSERT INTO sale_items (sale_id, products_id, quantity, unit_price, subtotal)
-                 VALUES ($1, $2, $3, $4, $5)`,
-                [saleId, product_id, quantity, unit_price, subtotal]
+                `INSERT INTO sale_items (sale_id, products_id, quantity, unit_price, subtotal, product_name_snapshot)
+                 VALUES ($1, $2, $3, $4, $5, $6)`,
+                [saleId, product_id, quantity, unit_price, subtotal, product.products_name]
             );
         }
 
@@ -114,16 +113,15 @@ exports.createSale = async (req, res) => {
             success      : true,
             message      : 'Sale completed successfully',
             sale_id      : saleId,
+            order_id     : orderId,
             total_amount,
         });
 
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('[createSale] Transaction Error:', error);
-
         const status  = error.status  || 500;
         const message = error.message || 'Internal Server Error';
-
         return res.status(status).json({ success: false, error: message });
 
     } finally {
@@ -132,84 +130,99 @@ exports.createSale = async (req, res) => {
 };
 
 // =================================================================
-// GET SALE HISTORY / GET BY ID (คงเดิม)
+// GET SALES HISTORY  →  GET /sales
 // =================================================================
-
 exports.getSalesHistory = async (req, res) => {
     try {
         const { startDate, endDate, search } = req.query;
-        let queryParams = [];
+        const userId = req.user.user_id; // ✅
+
+        let queryParams = [userId];
         let queryStr = `
             SELECT 
-                sale_id AS id, 
-                sale_id AS "orderNumber", 
-                total_amount AS "totalAmount", 
-                payment_method AS "paymentMethod", 
-                sale_date AS "createdAt",
-                'completed' AS status -- กำหนดสถานะตั้งต้นเป็นสำเร็จ
-            FROM sales 
-            WHERE 1=1
+                sale_id        AS id,
+                order_id       AS "orderNumber",
+                total_amount   AS "totalAmount",
+                payment_method AS "paymentMethod",
+                sale_date      AS "createdAt",
+                'completed'    AS status
+            FROM sales
+            WHERE user_id = $1
         `;
 
         // กรองตามวันที่
         if (startDate && endDate) {
             queryParams.push(startDate, endDate);
-            queryStr += ` AND sale_date::date BETWEEN $1 AND $2`;
+            queryStr += ` AND sale_date::date BETWEEN $2 AND $3`;
         }
 
-        // ค้นหาตามเลขที่บิล (sale_id)
+        // ✅ ค้นหาตาม order_id หรือ sale_id
         if (search) {
             queryParams.push(`%${search}%`);
             const searchIdx = queryParams.length;
-            queryStr += ` AND CAST(sale_id AS TEXT) LIKE $${searchIdx}`;
+            queryStr += ` AND (CAST(sale_id AS TEXT) LIKE $${searchIdx} OR order_id LIKE $${searchIdx})`;
         }
 
         queryStr += ` ORDER BY sale_date DESC`;
 
         const { rows } = await pool.query(queryStr, queryParams);
 
-        return res.status(200).json({ 
-            success: true, 
-            count: rows.length, 
-            data: rows.map(item => ({
+        return res.status(200).json({
+            success: true,
+            count  : rows.length,
+            data   : rows.map(item => ({
                 ...item,
-                totalAmount: parseFloat(item.totalAmount) // แปลงเป็นตัวเลขเพื่อความถูกต้อง
+                totalAmount: parseFloat(item.totalAmount)
             }))
         });
+
     } catch (error) {
         console.error('[getSalesHistory] DB Error:', error);
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
 
+// =================================================================
+// GET SALE BY ID  →  GET /sales/:id
+// =================================================================
 exports.getSaleById = async (req, res) => {
-    const { id } = req.params;
+    const { id }   = req.params;
+    const userId   = req.user.user_id; // ✅
+
     try {
         const { rows } = await pool.query(
-            `SELECT s.sale_id, s.total_amount, s.payment_method, s.sale_date,
-                    p.products_name, si.quantity, si.unit_price, si.subtotal
+            `SELECT 
+                s.sale_id, s.order_id, s.total_amount, s.payment_method, s.sale_date,
+                COALESCE(si.product_name_snapshot, p.products_name, 'Deleted Product') AS products_name,
+                si.quantity, si.unit_price, si.subtotal
              FROM sales s
-             JOIN sale_items si ON s.sale_id = si.sale_id
-             JOIN products p ON si.products_id = p.products_id
-             WHERE s.sale_id = $1`,
-            [id]
+             JOIN sale_items si ON s.sale_id     = si.sale_id
+             LEFT JOIN products p ON si.products_id = p.products_id
+             WHERE s.sale_id  = $1
+               AND s.user_id  = $2`,
+            [id, userId]
         );
 
-        if (rows.length === 0) return res.status(404).json({ success: false, error: 'Sale not found' });
+        if (rows.length === 0) {
+            return res.status(404).json({ success: false, error: 'Sale not found' });
+        }
 
         const saleData = {
-            sale_id: rows[0].sale_id,
-            sale_date: rows[0].sale_date,
-            total_amount: rows[0].total_amount,
-            payment_method: rows[0].payment_method,
+            sale_id        : rows[0].sale_id,
+            order_id       : rows[0].order_id,  // ✅ added
+            sale_date      : rows[0].sale_date,
+            total_amount   : rows[0].total_amount,
+            payment_method : rows[0].payment_method,
             items: rows.map(r => ({
-                product_name: r.products_name,
-                quantity: r.quantity,
-                unit_price: r.unit_price,
-                subtotal: r.subtotal,
+                product_name : r.products_name,
+                quantity     : r.quantity,
+                unit_price   : r.unit_price,
+                subtotal     : r.subtotal,
             })),
         };
+
         return res.status(200).json({ success: true, data: saleData });
+
     } catch (error) {
         console.error('[getSaleById] DB Error:', error);
         return res.status(500).json({ success: false, error: 'Internal Server Error' });

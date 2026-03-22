@@ -2,12 +2,14 @@ const pool = require('../db/db_pool');
 
 // =================================================================
 // GET ALL  →  GET /categories
+// (requires auth middleware on the route)
 // =================================================================
-
 exports.getAllCat = async (req, res) => {
     try {
         const { rows } = await pool.query(
-            'SELECT * FROM categories ORDER BY category_id ASC'
+            // ✅ Only return THIS user's categories
+            'SELECT * FROM categories WHERE user_id = $1 ORDER BY category_id ASC',
+            [req.user.user_id]
         );
 
         return res.status(200).json({
@@ -20,7 +22,7 @@ exports.getAllCat = async (req, res) => {
         console.error('[getAllCat] DB Error:', error);
         return res.status(500).json({
             success : false,
-            error   : 'Failed to fetch categories',   
+            error   : 'Failed to fetch categories',
         });
     }
 };
@@ -28,14 +30,14 @@ exports.getAllCat = async (req, res) => {
 // =================================================================
 // GET BY ID  →  GET /categories/:id
 // =================================================================
-
 exports.getCatByid = async (req, res) => {
     const { id } = req.params;
 
     try {
         const { rows } = await pool.query(
-            'SELECT * FROM categories WHERE category_id = $1',
-            [id]
+            // ✅ Must belong to this user
+            'SELECT * FROM categories WHERE category_id = $1 AND user_id = $2',
+            [id, req.user.user_id]
         );
 
         if (rows.length === 0) {
@@ -51,7 +53,7 @@ exports.getCatByid = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('[getCatByid] DB Error:', error);   
+        console.error('[getCatByid] DB Error:', error);
         return res.status(500).json({
             success : false,
             error   : 'Failed to fetch category',
@@ -62,22 +64,21 @@ exports.getCatByid = async (req, res) => {
 // =================================================================
 // CREATE  →  POST /categories
 // =================================================================
-
 exports.addCategory = async (req, res) => {
     const { name } = req.body;
 
-    // --- Validation ---
     if (!name) {
         return res.status(400).json({
             success : false,
-            error   : 'Category name is required',    
+            error   : 'Category name is required',
         });
     }
 
     try {
         const { rows } = await pool.query(
-            'INSERT INTO categories (category_name) VALUES ($1) RETURNING *',
-            [name]
+            // ✅ Save user_id when creating
+            'INSERT INTO categories (category_name, user_id) VALUES ($1, $2) RETURNING *',
+            [name, req.user.user_id]
         );
 
         return res.status(201).json({
@@ -106,45 +107,26 @@ exports.addCategory = async (req, res) => {
 // =================================================================
 // UPDATE  →  PUT /categories/:id
 // =================================================================
-
 exports.modCategory = async (req, res) => {
     const { id }   = req.params;
-    const { name } = req.body;    
+    const { name } = req.body;
 
-    // --- Validation ---
     if (!name) {
         return res.status(400).json({
             success : false,
-            error   : 'Category name is required',    
+            error   : 'Category name is required',
         });
     }
 
     try {
-        /*
-         * หมายเหตุ: เนื่องจาก category มีฟิลด์เดียวที่แก้ได้คือ category_name
-         * จึงไม่จำเป็นต้องใช้ Dynamic Query แบบซับซ้อน
-         * แต่คงโครงสร้างเดิมไว้เพื่อรองรับการขยายในอนาคต
-         */
-        const updateFields = [];
-        const values       = [];
-        let   paramCount   = 1;
-
-        if (name) {
-            updateFields.push(`category_name = $${paramCount}`);
-            values.push(name);
-            paramCount++;
-        }
-
-        values.push(id);
-
-        const sql = `
-            UPDATE categories
-            SET ${updateFields.join(', ')}
-            WHERE category_id = $${paramCount}
-            RETURNING *
-        `;
-
-        const { rows } = await pool.query(sql, values);
+        const { rows } = await pool.query(
+            // ✅ AND user_id ensures user can only edit their own
+            `UPDATE categories
+             SET category_name = $1
+             WHERE category_id = $2 AND user_id = $3
+             RETURNING *`,
+            [name, id, req.user.user_id]
+        );
 
         if (rows.length === 0) {
             return res.status(404).json({
@@ -165,13 +147,13 @@ exports.modCategory = async (req, res) => {
         if (error.code === '23505') {
             return res.status(409).json({
                 success : false,
-                error   : 'Category name already exists',  
+                error   : 'Category name already exists',
             });
         }
 
         return res.status(500).json({
             success : false,
-            error   : 'Failed to modify category',         
+            error   : 'Failed to modify category',
         });
     }
 };
@@ -179,27 +161,27 @@ exports.modCategory = async (req, res) => {
 // =================================================================
 // DELETE  →  DELETE /categories/:id
 // =================================================================
-
 exports.delCategory = async (req, res) => {
     const { id } = req.params;
 
     try {
         const { rows } = await pool.query(
-            'DELETE FROM categories WHERE category_id = $1 RETURNING *',
-            [id]
+            // ✅ AND user_id ensures user can only delete their own
+            'DELETE FROM categories WHERE category_id = $1 AND user_id = $2 RETURNING *',
+            [id, req.user.user_id]
         );
 
         if (rows.length === 0) {
             return res.status(404).json({
                 success : false,
-                error   : 'Category not found',     
+                error   : 'Category not found',
             });
         }
 
         return res.status(200).json({
             success : true,
             message : 'Category deleted successfully',
-            data    : rows[0],                      
+            data    : rows[0],
         });
 
     } catch (error) {

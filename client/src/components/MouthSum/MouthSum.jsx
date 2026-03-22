@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import {
-    Search, Calendar, Eye, ArrowUpDown, X,
-    ArrowLeft, FileSpreadsheet, Receipt, Package,
-    CreditCard, ChevronRight
+    Search, Eye, ArrowUpDown, Calendar, ArrowLeft,
+    TrendingUp, ShoppingBag, CreditCard, X, Receipt, ChevronRight
 } from 'lucide-react';
-import * as XLSX from 'xlsx';
-import styles from './OrderList.module.css';
+import styles from '../MouthSum/MouthSum.module.css';
 
 // ✅ Use env variable
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
@@ -17,39 +15,50 @@ const getAuthHeader = () => ({
     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
 });
 
-const OrderList = () => {
+const MouthSum = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-
     const [orders, setOrders]           = useState([]);
     const [loading, setLoading]         = useState(true);
     const [searchTerm, setSearchTerm]   = useState('');
-    const [dateFilter, setDateFilter]   = useState({
-        startDate: location.state?.startDate || new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
-        endDate  : location.state?.endDate   || new Date().toISOString().split('T')[0]
-    });
+    const [sortDir, setSortDir]         = useState('desc');
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
-    const [sortDir, setSortDir]         = useState('desc');
+
+    const now = new Date();
+    const [selectedMonth, setSelectedMonth] = useState(now.getMonth() + 1);
+    const [selectedYear, setSelectedYear]   = useState(now.getFullYear());
+
+    const thaiMonths = [
+        'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+        'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+    ];
+    const yearOptions = Array.from({ length: 7 }, (_, i) => now.getFullYear() - 3 + i);
 
     // ✅ Redirect if no token
     useEffect(() => {
         if (!localStorage.getItem('token')) navigate('/login');
     }, [navigate]);
 
+    const getDateRange = useCallback(() => {
+        const mm       = String(selectedMonth).padStart(2, '0');
+        const startDate = `${selectedYear}-${mm}-01`;
+        const lastDay  = new Date(selectedYear, selectedMonth, 0).getDate();
+        const endDate  = `${selectedYear}-${mm}-${lastDay}`;
+        return { startDate, endDate };
+    }, [selectedMonth, selectedYear]);
+
     const fetchOrders = useCallback(async () => {
         try {
             setLoading(true);
+            const { startDate, endDate } = getDateRange();
+
             // ✅ Auth header
             const response = await axios.get(`${API_BASE}/sales`, {
-                params: {
-                    startDate : dateFilter.startDate,
-                    endDate   : dateFilter.endDate,
-                    search    : searchTerm
-                },
+                params: { startDate, endDate, search: searchTerm },
                 ...getAuthHeader()
             });
+
             if (response.data && response.data.success) {
                 setOrders(response.data.data);
             }
@@ -64,17 +73,21 @@ const OrderList = () => {
         } finally {
             setLoading(false);
         }
-    }, [dateFilter, searchTerm, navigate]);
+    }, [searchTerm, getDateRange, navigate]);
+
+    useEffect(() => { fetchOrders(); }, [fetchOrders]);
 
     const handleViewDetail = async (id) => {
         try {
             setIsModalOpen(true);
             setModalLoading(true);
+
             // ✅ Auth header
             const response = await axios.get(
                 `${API_BASE}/sales/${id}`,
                 getAuthHeader()
             );
+
             if (response.data && response.data.success) {
                 setSelectedOrder(response.data.data);
             }
@@ -94,33 +107,11 @@ const OrderList = () => {
         }
     };
 
-    const handleExportExcel = () => {
-        if (!orders.length) return;
-        const rows = orders.map(o => ({
-            'เลขที่ออเดอร์'     : `#${o.orderNumber}`,
-            'วันที่สั่งซื้อ'     : new Date(o.createdAt).toLocaleString('th-TH'),
-            'วิธีชำระเงิน'      : o.paymentMethod || 'ไม่ระบุ',
-            'ยอดรวมสุทธิ (฿)'   : Number(o.totalAmount),
-            'สถานะ'             : 'สำเร็จ'
-        }));
-        const ws = XLSX.utils.json_to_sheet(rows);
-        ws['!cols'] = [{ wch: 18 }, { wch: 22 }, { wch: 18 }, { wch: 18 }, { wch: 12 }];
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'รายการคำสั่งซื้อ');
-        const from = dateFilter.startDate.replace(/-/g, '');
-        const to   = dateFilter.endDate.replace(/-/g, '');
-        XLSX.writeFile(wb, `orders_${from}_${to}.xlsx`);
-    };
+    const totalRevenue  = orders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
+    const totalOrders   = orders.length;
+    const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-    useEffect(() => { fetchOrders(); }, [fetchOrders]);
-
-    const handleDateChange = (e) => {
-        const { name, value } = e.target;
-        setDateFilter(prev => ({ ...prev, [name]: value }));
-    };
-
-    const totalRevenue  = orders.reduce((s, o) => s + Number(o.totalAmount), 0);
-    const sortedOrders  = [...orders].sort((a, b) => {
+    const sortedOrders = [...orders].sort((a, b) => {
         const diff = new Date(a.createdAt) - new Date(b.createdAt);
         return sortDir === 'asc' ? diff : -diff;
     });
@@ -138,33 +129,34 @@ const OrderList = () => {
                 <header className={styles.header}>
                     <div className={styles.titleBlock}>
                         <div className={styles.titleBadge}>
-                            <Receipt size={12} /><span>Order History</span>
+                            <Calendar size={12} /><span>Monthly</span>
                         </div>
-                        <h1 className={styles.title}>รายการคำสั่งซื้อทั้งหมด</h1>
-                        <p className={styles.subtitle}>ตรวจสอบและจัดการประวัติการขายในระบบ</p>
+                        <h1 className={styles.title}>สรุปยอดขายรายเดือน</h1>
+                        <p className={styles.subtitle}>
+                            ประจำเดือน {thaiMonths[selectedMonth - 1]} {selectedYear + 543}
+                        </p>
                     </div>
-                    <button className={styles.exportBtn} onClick={handleExportExcel} disabled={!orders.length || loading}>
-                        <FileSpreadsheet size={16} /><span>Export Excel</span>
-                    </button>
                 </header>
 
                 <div className={styles.summaryStrip}>
                     <div className={styles.summaryItem}>
-                        <Package size={16} />
-                        <span>ออเดอร์ทั้งหมด</span>
-                        <strong>{orders.length.toLocaleString()} รายการ</strong>
+                        <ShoppingBag size={16} />
+                        <span>จำนวนออเดอร์</span>
+                        <strong>{totalOrders.toLocaleString()} รายการ</strong>
                     </div>
                     <div className={styles.stripDivider} />
                     <div className={styles.summaryItem}>
-                        <CreditCard size={16} />
-                        <span>ยอดรวม</span>
+                        <TrendingUp size={16} />
+                        <span>ยอดขายรวม</span>
                         <strong className={styles.greenText}>฿{totalRevenue.toLocaleString()}</strong>
                     </div>
                     <div className={styles.stripDivider} />
                     <div className={styles.summaryItem}>
-                        <Calendar size={16} />
-                        <span>ช่วงเวลา</span>
-                        <strong>{dateFilter.startDate} — {dateFilter.endDate}</strong>
+                        <CreditCard size={16} />
+                        <span>ยอดเฉลี่ยต่อบิล</span>
+                        <strong className={styles.violetText}>
+                            ฿{avgOrderValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                        </strong>
                     </div>
                 </div>
 
@@ -179,15 +171,17 @@ const OrderList = () => {
                         />
                     </div>
                     <div className={styles.dateGroup}>
-                        <div className={styles.dateField}>
-                            <label>ตั้งแต่</label>
-                            <input type="date" name="startDate" value={dateFilter.startDate} onChange={handleDateChange} />
-                        </div>
-                        <span className={styles.dateSep}>—</span>
-                        <div className={styles.dateField}>
-                            <label>ถึง</label>
-                            <input type="date" name="endDate" value={dateFilter.endDate} onChange={handleDateChange} />
-                        </div>
+                        <Calendar size={15} className={styles.calIcon} />
+                        <select value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))} className={styles.selectInput}>
+                            {thaiMonths.map((m, i) => (
+                                <option key={i + 1} value={i + 1}>{m}</option>
+                            ))}
+                        </select>
+                        <select value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))} className={styles.selectInput}>
+                            {yearOptions.map(y => (
+                                <option key={y} value={y}>{y + 543}</option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
@@ -196,12 +190,13 @@ const OrderList = () => {
                         <thead>
                             <tr>
                                 <th>เลขที่ออเดอร์</th>
+                                <th>วันที่</th>
                                 <th>
                                     <button className={styles.sortBtn} onClick={() => setSortDir(d => d === 'asc' ? 'desc' : 'asc')}>
-                                        วันที่สั่งซื้อ <ArrowUpDown size={13} />
+                                        เวลา <ArrowUpDown size={13} />
                                     </button>
                                 </th>
-                                <th>วิธีชำระเงิน</th>
+                                <th>วิธีการชำระเงิน</th>
                                 <th>ยอดรวมสุทธิ</th>
                                 <th>สถานะ</th>
                                 <th style={{ textAlign: 'center' }}>รายละเอียด</th>
@@ -209,31 +204,36 @@ const OrderList = () => {
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan="6" className={styles.emptyRow}>
+                                <tr><td colSpan="7" className={styles.emptyRow}>
                                     <div className={styles.loadingDots}><span /><span /><span /></div>
                                 </td></tr>
-                            ) : sortedOrders.length > 0 ? sortedOrders.map((order, i) => (
-                                <tr key={order.id} style={{ animationDelay: `${i * 30}ms` }} className={styles.tableRow}>
-                                    <td><span className={styles.orderNo}>#{order.orderNumber}</span></td>
-                                    <td className={styles.dateCell}>
-                                        <span className={styles.dateMain}>
-                                            {new Date(order.createdAt).toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' })}
-                                        </span>
-                                        <span className={styles.dateSub}>
-                                            {new Date(order.createdAt).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })} น.
-                                        </span>
-                                    </td>
-                                    <td><span className={styles.paymentTag}>{order.paymentMethod || 'ไม่ระบุ'}</span></td>
-                                    <td className={styles.amountCell}>฿{Number(order.totalAmount).toLocaleString()}</td>
-                                    <td><span className={styles.statusBadge}>สำเร็จ</span></td>
-                                    <td className={styles.actionCell}>
-                                        <button className={styles.viewBtn} onClick={() => handleViewDetail(order.id)} title="ดูรายละเอียด">
-                                            <Eye size={15} /><span>ดู</span><ChevronRight size={13} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            )) : (
-                                <tr><td colSpan="6" className={styles.emptyRow}>ไม่พบรายการในช่วงเวลาที่เลือก</td></tr>
+                            ) : sortedOrders.length > 0 ? sortedOrders.map((order, i) => {
+                                const dt = new Date(order.createdAt);
+                                return (
+                                    <tr key={order.id} className={styles.tableRow} style={{ animationDelay: `${i * 25}ms` }}>
+                                        <td><span className={styles.orderNo}>#{order.orderNumber}</span></td>
+                                        <td className={styles.dateCell}>
+                                            {dt.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                        </td>
+                                        <td className={styles.timeCell}>
+                                            {dt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })} น.
+                                        </td>
+                                        <td>
+                                            <span className={styles.paymentTag}>{order.paymentMethod || 'ไม่ระบุ'}</span>
+                                        </td>
+                                        <td className={styles.amountCell}>฿{Number(order.totalAmount).toLocaleString()}</td>
+                                        <td><span className={styles.statusBadge}>สำเร็จ</span></td>
+                                        <td className={styles.actionCell}>
+                                            <button className={styles.viewBtn} onClick={() => handleViewDetail(order.id)}>
+                                                <Eye size={15} /><span>ดู</span><ChevronRight size={13} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            }) : (
+                                <tr><td colSpan="7" className={styles.emptyRow}>
+                                    ไม่มีรายการขายในเดือนนี้
+                                </td></tr>
                             )}
                         </tbody>
                     </table>
@@ -249,7 +249,7 @@ const OrderList = () => {
                                 <Receipt size={18} className={styles.modalIcon} />
                                 <div>
                                     <h2>รายละเอียดบิล</h2>
-                                    {selectedOrder && <p>{selectedOrder.order_id || `#${selectedOrder.sale_id}`}</p>}
+                                    {selectedOrder && <p>#{selectedOrder.sale_id}</p>}
                                 </div>
                             </div>
                             <button className={styles.closeBtn} onClick={() => setIsModalOpen(false)}>
@@ -306,4 +306,4 @@ const OrderList = () => {
     );
 };
 
-export default OrderList;
+export default MouthSum;
